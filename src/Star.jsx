@@ -17,7 +17,7 @@ const StarRating = ({maxRating = 5, color = "#fcc419" , size = 48 , messages =[]
   const [rating,setrating]  = useState(defaultRating);
   const [tempRating, set_tempRating] = useState(defaultRating);
   const handleRating = (rating) => {
-      setrating(rating+1);
+      setrating(rating);
       onSetRating(rating);
   };
   const textStyle = {
@@ -39,7 +39,8 @@ const StarRating = ({maxRating = 5, color = "#fcc419" , size = 48 , messages =[]
          size = {size}/>
      ))}
     </div>
-    <p style={textStyle}>{rating}</p>
+    <p style={textStyle}>{tempRating|| rating ||""}
+    </p>
     </div>
   )
 }
