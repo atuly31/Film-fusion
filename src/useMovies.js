@@ -9,7 +9,7 @@ export const useMovies = (query) => {
           try{
             setLoading(true);
             seterror("");
-            const response = await fetch(`http://www.omdbapi.com/?apikey=d855abd9&s=${query}`)
+            const response = await fetch(`https://www.omdbapi.com/?apikey=d855abd9&s=${query}`)
             if(!response.ok) throw new Error("Something  wrong");
             const  data = await response.json();
            
