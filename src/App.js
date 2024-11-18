@@ -1,69 +1,44 @@
-import { hasFormSubmit } from "@testing-library/user-event/dist/utils";
-import { useEffect, useState } from "react";
-import StarRating from "./Star";
 
-const KEY = "d855abd9";
-const film = "Interstellar"
+import { useEffect, useRef, useState } from "react";
+import StarRating from "./Star";
+import { useMovies } from "./useMovies";
+import { useLocalStorage } from "./useLocalStorage";
+
+
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
-  const [isLodaing , setLoading] = useState(false);
-  const  [iserror, seterror] = useState("")
+ 
+
   const [query, setQuery] = useState("");
   const [selectedID, SetselectedID] = useState("");
- 
+  const [movies,iserror,isLodaing] = useMovies(query)
+  const [watched,setWatched] = useLocalStorage([],"watched");
+  console.log(watched);
   const HandleSelectedID = (selectedID) => {
-     SetselectedID(selectedID)
+    SetselectedID(selectedID);
   };
 
   const Close_btn = () => {
-      SetselectedID("");
+    SetselectedID("");
   };
 
-  const add_moive_to_List = (watched) => {
-      setWatched((pre)=> [...pre, watched]);
+  const add_moive_to_List = (Moive) => {
+    setWatched((pre) => [...pre, Moive]);
   };
-  
+
   const handle_delete = (movieID) => {
-   setWatched( watched.filter((movie)=> {return (movie.imdbID!=movieID)}))
+    setWatched(
+      watched.filter((movie) => {
+        return movie.imdbID !== movieID;
+      })
+    );
   };
-  
+
  
-  useEffect(function () {
-    async function moivefunctoion() {
-      try{
-        setLoading(true);
-        seterror("");
-        const response = await fetch(`http://www.omdbapi.com/?apikey=d855abd9&s=${query}`)
-        if(!response.ok) throw new Error("Something  wrong");
-        const  data = await response.json();
-       
-        if(data.Response === 'False') throw new Error("Something  wrong");
-        setMovies(data.Search);
-       
-       
-      }
-      catch(err){
-            console.error(err.message)
-            seterror(err.message)
-            setMovies([]);
-      }
-      finally{
-        setLoading(false);
-        
-      }
-    }
-    if(query.length<3)
-      {
-        seterror("")
-        setMovies([]);
-        return;
-      }
-    moivefunctoion();
-  }, [query]);
+
+ 
 
   return (
     <>
@@ -74,21 +49,30 @@ export default function App() {
       <Main>
         <ListBox>
           {isLodaing && <Loader />}
-          {!isLodaing && !iserror && <MoivesList movies={movies} HandleSelectedID={HandleSelectedID}/>}
+          {!isLodaing && !iserror && (
+            <MoivesList movies={movies} HandleSelectedID={HandleSelectedID} />
+          )}
           {iserror && <Error_message message={iserror} />}
         </ListBox>
-        
+
         <WatchedBox>
-          {selectedID ? 
-            <Moive_details selectedID={selectedID} Close_btn={Close_btn} add_moive_to_List={add_moive_to_List} watched={watched}/>
-          : 
+          {selectedID ? (
+            <Moive_details
+              selectedID={selectedID}
+              Close_btn={Close_btn}
+              add_moive_to_List={add_moive_to_List}
+              watched={watched}
+            />
+          ) : (
             <>
               <Moive_Summary watched={watched} />
-              <WatchedMoiveList watched={watched} handle_delete={handle_delete} />
+              <WatchedMoiveList
+                watched={watched}
+                handle_delete={handle_delete}
+              />
             </>
-          }
+          )}
         </WatchedBox>
-        
       </Main>
     </>
   );
@@ -117,6 +101,23 @@ const Nav_bar = ({children}) => {
 
 const Search = ({query, setQuery}) => {
  
+  const input_el = useRef(null)
+  useEffect(function () {
+    
+
+    function callback(e){
+      if(document.activeElement === input_el.current) return 
+      if(e.code==="Enter"){
+
+       input_el.current.focus();
+       setQuery("")
+      }
+    }
+    
+
+    return ()=> document.addEventListener("keydown",callback)
+  }, []);
+  
   return (
     <input
       className="search"
@@ -124,6 +125,7 @@ const Search = ({query, setQuery}) => {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
+      ref={input_el}
     />
   );
 };
@@ -209,7 +211,7 @@ const Moive_details = ({selectedID,Close_btn,add_moive_to_List,watched}) => {
 
     const [movie , setMovie] = useState({});
     const [userRating, SetuserRating] = useState("");
-    console.log(userRating)
+    
     const {
       Title: title,
       Year: year,
@@ -236,7 +238,11 @@ const Moive_details = ({selectedID,Close_btn,add_moive_to_List,watched}) => {
            runtime:Number(runtime.split(" ").at(0))
         }
         add_moive_to_List(watchedMovie);
+        
     };
+
+   
+
   useEffect(() => {
     async function getMoviesByID() {
       const response = await fetch(
@@ -337,9 +343,9 @@ const Movies = ({movie,HandleSelectedID}) => {
 
 const Moive_Summary = ({watched}) => {
 
-  const avgImdbRating = average(watched.map((movie) => Number(movie.imdbRating)));
-  const avgUserRating = average(watched.map((movie) => movie.UserRating));
-  const avgRuntime = average(watched.map((movie) => (movie.runtime)));
+  const avgImdbRating = (average(watched.map((movie) => Number(movie.imdbRating))));
+  const avgUserRating = (average(watched.map((movie) => movie.UserRating)));
+  const avgRuntime = Math.round(average(watched.map((movie) => (movie.runtime))),1);
   return (
     <div className="summary">
               <h2>Movies you watched</h2>
