@@ -246,9 +246,9 @@ const Moive_details = ({selectedID,Close_btn,add_moive_to_List,watched}) => {
   useEffect(() => {
     async function getMoviesByID() {
       const response = await fetch(
-        `http://www.omdbapi.com/?i=${selectedID}&apikey=d855abd9`
+        `https://www.omdbapi.com/?i=${selectedID}&apikey=d855abd9`
       );
-     
+     console.log(selectedID)
       const data = await response.json(); 
       setMovie(data);
     }
