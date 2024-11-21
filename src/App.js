@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import StarRating from "./Star";
 import { useMovies } from "./useMovies";
 import { useLocalStorage } from "./useLocalStorage";
-
+import Search from "./SearchButton";
+import Navbar from "./Components/NavigationBar";
 
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -42,10 +43,10 @@ export default function App() {
 
   return (
     <>
-      <Nav_bar>
-        <Search query={query} setQuery={setQuery} />
-        <SearchResult movie={movies} />
-      </Nav_bar>
+
+      <Navbar >
+      <Search query={query} setQuery={setQuery} />
+      </Navbar>
       <Main>
         <ListBox>
           {isLodaing && <Loader />}
@@ -99,36 +100,36 @@ const Nav_bar = ({children}) => {
   );
 };
 
-const Search = ({query, setQuery}) => {
+// const Search = ({query, setQuery}) => {
  
-  const input_el = useRef(null)
-  useEffect(function () {
+//   const input_el = useRef(null)
+//   useEffect(function () {
     
 
-    function callback(e){
-      if(document.activeElement === input_el.current) return 
-      if(e.code==="Enter"){
+//     function callback(e){
+//       if(document.activeElement === input_el.current) return 
+//       if(e.code==="Enter"){
 
-       input_el.current.focus();
-       setQuery("")
-      }
-    }
+//        input_el.current.focus();
+//        setQuery("")
+//       }
+//     }
     
 
-    return ()=> document.addEventListener("keydown",callback)
-  }, []);
+//     return ()=> document.addEventListener("keydown",callback)
+//   }, []);
   
-  return (
-    <input
-      className="search"
-      type="text"
-      placeholder="Search movies..."
-      value={query}
-      onChange={(e) => setQuery(e.target.value)}
-      ref={input_el}
-    />
-  );
-};
+//   return (
+//     <input
+//       className="search"
+//       type="text"
+//       placeholder="Search movies..."
+//       value={query}
+//       onChange={(e) => setQuery(e.target.value)}
+//       ref={input_el}
+//     />
+//   );
+// };
 
 const SearchResult = ({movie}) => {
   return (
@@ -248,7 +249,7 @@ const Moive_details = ({selectedID,Close_btn,add_moive_to_List,watched}) => {
       const response = await fetch(
         `https://www.omdbapi.com/?i=${selectedID}&apikey=d855abd9`
       );
-     console.log(selectedID)
+     
       const data = await response.json(); 
       setMovie(data);
     }
