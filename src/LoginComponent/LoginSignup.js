@@ -38,7 +38,7 @@ const LoginSignup = () => {
 
   const submitLoginForm = async(data) => {
     const payload = {...data, action: "login"};
-    const response = await axios.post('http://localhost:8080/loginSignup',payload);
+    const response = await axios.post('https://film-fusion-u3n5.vercel.app/loginSignup',payload);
     const User_data = response.data
     console.log(User_data)
     localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
@@ -53,7 +53,7 @@ const LoginSignup = () => {
 
   const submitForm = async(data) => {
     const payload = {...data, action: "register"};
-    const response = await axios.post('http://localhost:8080/loginSignup',payload);
+    const response = await axios.post('https://film-fusion-u3n5.vercel.app/loginSignup',payload);
     if(response.status === 201){
       alert("Successfully registered!");
       Nav("/")
