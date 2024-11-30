@@ -1,20 +1,26 @@
 import express from "express";
 import bodyParser from "body-parser";
 import db from "./ConfigDB/ConnectDB.js";
-import dotenv from "dotenv";
+
 import cors from "cors";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import { Strategy } from "passport-local";
 const app = express();
-dotenv.config();
-app.use(express.json());
+
 db.connect();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 const PORT = 8080;
-app.use(express.json());
 
+app.use(express.json());
+app.use(cors(
+  {
+    origin: ["https://film-fusion-coral.vercel.app"],
+    methods: ["GET, POST"],
+    credentials: true,
+  }
+));
 let Current_user_id = "";
 app.post("/", async (req, res) => {
   const { title,year,poster,runtime,imdbRating,userRating } = req.body;
