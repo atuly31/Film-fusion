@@ -7,7 +7,7 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import { Strategy } from "passport-local";
 const app = express();
-dotenv.config();
+
 app.use(express.json());
 db.connect();
 app.use(cors());
