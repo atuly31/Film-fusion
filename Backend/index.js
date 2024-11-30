@@ -16,6 +16,10 @@ const PORT = 8080;
 app.use(express.json());
 
 let Current_user_id = "";
+app.get("/", (req, res) => {
+  res.status(200).send("hello");
+});
+
 app.post("/", async (req, res) => {
   const { title,year,poster,runtime,imdbRating,userRating } = req.body;
   console.log(Current_user_id,title,year,poster,runtime,imdbRating,userRating);
