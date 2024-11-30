@@ -2,16 +2,16 @@ import { react, useEffect, useState, useRef } from "react";
 
 const Searchbar = ({ query, setQuery }) => {
   const input_el = useRef(null);
-  useEffect(() => {
-    {
-      function handleRightClick(e) {
-        e.preventDefault();
-        setQuery("");
-      }
-      document.addEventListener("click", handleRightClick);
-      return () => document.removeEventListener("mousedown", handleRightClick);
-    }
-  });
+  // useEffect(() => {
+  //   {
+  //     function handleLeftClick(e) {
+  //       e.preventDefault();
+  //       setQuery("");
+  //     }
+  //     document.addEventListener("click", handleLeftClick);
+  //     return () => document.removeEventListener("click", handleLeftClick);
+  //   }
+  // },[query]);
 
   useEffect(function () {
     function callback(e) {
@@ -21,9 +21,9 @@ const Searchbar = ({ query, setQuery }) => {
         setQuery("");
       }
     }
-
+     document.removeEventListener("keydown", callback);
     return () => document.addEventListener("keydown", callback);
-  }, []);
+  }, [setQuery]);
 
   return (
     <>

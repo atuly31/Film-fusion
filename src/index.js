@@ -1,16 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
-import StarRating from './Star';
+
 import reportWebVitals from './reportWebVitals';
+import {BrowserRouter} from 'react-router-dom'
+import  Main from './Main';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
-    {/* <StarRating messages={["Terrible","Bad","Okay", "Good", "Amazing"]} defaultRating={2} />
-    <StarRating size ={90} color = "blue" messages={["Terrible","Bad","Okay", "Good", "Amazing"]}defaultRating={4}/> */}
+  <BrowserRouter>
+      <Main />
+     
+  </BrowserRouter>
+  
+   
   </React.StrictMode>
 );
 
