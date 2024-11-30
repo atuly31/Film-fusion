@@ -7,7 +7,8 @@ import bcrypt from "bcrypt";
 import passport from "passport";
 import { Strategy } from "passport-local";
 const app = express();
-
+dotenv.config();
+app.use(express.json());
 db.connect();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -22,6 +23,10 @@ app.use(
   })
 );
 let Current_user_id = "";
+app.get("/", (req, res) => {
+  res.status(200).send("hello");
+});
+
 app.post("/", async (req, res) => {
   const { title, year, poster, runtime, imdbRating, userRating } = req.body;
   console.log(
@@ -123,3 +128,5 @@ app.post("/loginSignup", async (req, res) => {
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+export default app;
