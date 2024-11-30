@@ -51,7 +51,7 @@ function Navbar( {children}) {
     nav("/loginSignup")
   }
   function HandleRedirectdashboard () {
-    nav("/profile")
+    nav("/dashboard")
   }
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);

@@ -25,10 +25,13 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userLikedMovie = await axios.get("http://localhost:8080/profile");
-        console.log(userLikedMovie.data);
-        setUserName(userLikedMovie.data[0].name);
-        setUserEmail(userLikedMovie.data[0].email);
+        const val = localStorage.getItem("user");
+        const User_data = JSON.parse(val)
+        const userLikedMovie = await axios.get("http://localhost:8080/dashboard", {
+          withCredentials: true,});
+         console.log(userLikedMovie.data)
+        setUserName(User_data.name);
+        setUserEmail(User_data.email);
         if (userLikedMovie) {
           setUser(userLikedMovie.data);
         }
@@ -45,7 +48,7 @@ const ProfilePage = () => {
   },[]);
 
   const handleRedirect = () => {
-    // Redirect to movie list page
+   
     nav("/");
     console.log("Redirecting to movie list page");
   };
@@ -73,7 +76,7 @@ const ProfilePage = () => {
           Liked Movies
         </Typography>
         <List>
-          {user_Movie.map((data, index) => (
+          {user_Movie.length!==0 ? user_Movie.map((data, index) => (
             <ListItem key={index}>
               <ListItemAvatar>
                 <Avatar>
@@ -82,7 +85,9 @@ const ProfilePage = () => {
               </ListItemAvatar>
               <ListItemText primary={data.title} />
             </ListItem>
-          ))}
+          )): <Typography variant="h6" gutterBottom>
+          You have not Rated Any Movie
+        </Typography>}
         </List>
       </Paper>
       <Box sx={{ my: 2, textAlign: "center" }}>

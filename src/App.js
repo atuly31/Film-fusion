@@ -4,7 +4,7 @@ import { useMovies } from "./useMovies";
 import { useLocalStorage } from "./useLocalStorage";
 import Searchbar from "./SearchButton";
 import Navbar from "./Components/NavigationBar";
-import LoginSignup from "./LoginComponent/LoginSignup";
+import WatchedMoiveList  from "./WatchedMoiveList";
 import axios from "axios";
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
@@ -13,8 +13,8 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [selectedID, SetselectedID] = useState("");
   const [movies, iserror, isLodaing] = useMovies(query, Close_btn);
-  const [watched, setWatched] = useLocalStorage([], "watched");
-
+  const [watched, setWatched] = useState([])
+  
   const HandleSelectedID = (selectedID) => {
     SetselectedID(selectedID);
   };
@@ -29,12 +29,26 @@ export default function App() {
   );
     
   };
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        
+        const response = await axios.get("http://localhost:8080", {
+          withCredentials: true,});
+          console.log(response.data);
+          setWatched(response.data)
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  },[watched]);
+
+
   const sendData = async(movie_list)=>{
     try {
       const response = await axios.post('http://localhost:8080', movie_list);
-      console.log("you are in clicked ");
-      console.log(watched);
-      console.log(response);
         if(response.status===201){
           console.log("Data sent to server");
           alert("Data sent to server successfully!");
@@ -50,6 +64,27 @@ export default function App() {
       alert("An error occurred while sending data.");
     }
   }
+ console.log(watched)
+  const deleteMovie =  async(movieID)=>{
+    try {
+      console.log(movieID)
+      const response  = await axios.delete("http://localhost:8080", { data: { movieID } // Sending movieID in the request body 
+        });
+      
+      if(response.status === 200){
+        console.log("Movie deleted successfully");
+        alert("Movie deleted successfully!");
+      }
+      else{
+        console.log("Failed to delete movie");
+        alert("Failed to delete movie!");
+      }
+    } catch (error) {
+      console.error("Error deleting movie:", error);
+      alert("An error occurred while deleting movie.");
+    }
+  } 
+      
 
   const handle_delete = (movieID) => {
     setWatched(
@@ -57,8 +92,9 @@ export default function App() {
         return movie.imdbID !== movieID;
       })
     );
+    deleteMovie(movieID);
   };
-
+  
   return (
     <>
       <Navbar>
@@ -299,9 +335,9 @@ const Movies = ({ movie, HandleSelectedID }) => {
 
 const Moive_Summary = ({ watched }) => {
   const avgImdbRating = average(
-    watched.map((movie) => Number(movie.imdbRating))
+    watched.map((movie) => Number(movie.imdbrating))
   );
-  const avgUserRating = average(watched.map((movie) => movie.UserRating));
+  const avgUserRating = average(watched.map((movie) => movie.userrating));
   const avgRuntime = Math.round(
     average(watched.map((movie) => movie.runtime)),
     1
@@ -331,35 +367,3 @@ const Moive_Summary = ({ watched }) => {
   );
 };
 
-const WatchedMoiveList = ({ watched, handle_delete }) => {
-  return (
-    <ul className="list">
-      {watched.map((movie) => (
-        <li key={movie.imdbID}>
-          <img src={movie.poster} alt={`${movie.Title} poster`} />
-          <h3>{movie.Title}</h3>
-          <div>
-            <p>
-              <span>⭐️</span>
-              <span>{Number(movie.imdbRating)}</span>
-            </p>
-            <p>
-              <span>🌟</span>
-              <span>{movie.UserRating}</span>
-            </p>
-            <p>
-              <span>⏳</span>
-              <span>{movie.runtime} min</span>
-            </p>
-            <button
-              className="btn-delete"
-              onClick={() => handle_delete(movie.imdbID)}
-            >
-              ❌
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
-  );
-};

@@ -16,8 +16,9 @@ const Main = () => {
             </>
           }
         />
-        <Route path="/profile" element={<ProfilePage/>}></Route>
+        {/* <Route path="/profile" element={<ProfilePage/>}></Route> */}
         <Route path="/loginSignup" element={<LoginSignup />}></Route>
+        <Route path="/dashboard" element={<ProfilePage />}></Route>
       </Routes>
     </>
   );

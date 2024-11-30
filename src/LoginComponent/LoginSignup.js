@@ -38,13 +38,15 @@ const LoginSignup = () => {
 
   const submitLoginForm = async(data) => {
     const payload = {...data, action: "login"};
-    const response = await axios.post('https://film-fusion-u3n5.vercel.app/loginSignup',payload);
+    const response = await axios.post('http://localhost:8080/loginSignup',payload);
     const User_data = response.data
     console.log(User_data)
+    localStorage.removeItem("user");
     localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
+   
     if(response.status === 200){
       alert("Login Successful!");
-      Nav("/profile");
+      Nav("/dashboard");
     }else if(response.data === "Invalid Credentials"){
       alert("Login failed!");
     }
@@ -53,7 +55,10 @@ const LoginSignup = () => {
 
   const submitForm = async(data) => {
     const payload = {...data, action: "register"};
-    const response = await axios.post('https://film-fusion-u3n5.vercel.app/loginSignup',payload);
+    const response = await axios.post('http://localhost:8080/loginSignup',payload);
+    const User_data = response.data
+    localStorage.removeItem("user");
+    localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
     if(response.status === 201){
       alert("Successfully registered!");
       Nav("/")
