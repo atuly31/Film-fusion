@@ -23,7 +23,7 @@ app.use(express.json());
 //   })
 // );
 let Current_user_id = "";
-app.get("/", (req, res) => {
+app.use("/", (req, res) => {
   res.status(200).send("hello");
 });
 
