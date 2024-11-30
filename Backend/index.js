@@ -14,21 +14,29 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const PORT = 8080;
 
 app.use(express.json());
-app.use(cors(
-  {
+app.use(
+  cors({
     origin: ["https://film-fusion-coral.vercel.app"],
     methods: ["GET, POST"],
     credentials: true,
-  }
-));
+  })
+);
 let Current_user_id = "";
 app.post("/", async (req, res) => {
-  const { title,year,poster,runtime,imdbRating,userRating } = req.body;
-  console.log(Current_user_id,title,year,poster,runtime,imdbRating,userRating);
+  const { title, year, poster, runtime, imdbRating, userRating } = req.body;
+  console.log(
+    Current_user_id,
+    title,
+    year,
+    poster,
+    runtime,
+    imdbRating,
+    userRating
+  );
   try {
     const response = await db.query(
       "insert into LikedMovies (user_id ,title,year,poster,runtime,imdbrating,userrating)values ($1,$2,$3,$4,$5,$6,$7)",
-      [Current_user_id,title,year,poster,runtime,imdbRating,userRating]
+      [Current_user_id, title, year, poster, runtime, imdbRating, userRating]
     );
     const watched_movies = response.rows[0];
     res.status(201).send(watched_movies);
@@ -39,24 +47,19 @@ app.post("/", async (req, res) => {
 });
 const saltRound = 10;
 
-
-
-app.get("/profile",async(req, res) => {
+app.get("/profile", async (req, res) => {
   try {
-    const data = await db.query("SELECT * FROM user_details as u1 inner join  likedmovies as l1 ON  u1.id = l1.user_id where user_id=($1)",[Current_user_id])
+    const data = await db.query(
+      "SELECT * FROM user_details as u1 inner join  likedmovies as l1 ON  u1.id = l1.user_id where user_id=($1)",
+      [Current_user_id]
+    );
     console.log(data.rows);
     res.status(200).send(data.rows);
-    
   } catch (error) {
-      console.error("Error getting user:", error.message);
-      res.status(500).send("Error getting The Data");
+    console.error("Error getting user:", error.message);
+    res.status(500).send("Error getting The Data");
   }
-      
-
-})
-
-
-
+});
 
 app.post("/loginSignup", async (req, res) => {
   const { name, password, email, action } = req.body;
