@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node Backend/index.js", // Assuming the file is inside the Backend folder
+    "start": "node Backend/index.js", 
     "server": "nodemon Backend/index.js"
   },
   "keywords": [],
