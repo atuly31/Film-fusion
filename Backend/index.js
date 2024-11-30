@@ -15,15 +15,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const PORT = 8080;
 
 app.use(express.json());
-app.use(
-  cors({
-    origin: ["https://film-fusion-coral.vercel.app"],
-    methods: ["GET, POST"],
-    credentials: true,
-  })
-);
+// app.use(
+//   cors({
+//     origin: ["https://film-fusion-coral.vercel.app"],
+//     methods: ["GET, POST"],
+//     credentials: true,
+//   })
+// );
 let Current_user_id = "";
-app.get("/", (req, res) => {
+app.use("/", (req, res) => {
   res.status(200).send("hello");
 });
 
