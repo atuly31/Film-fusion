@@ -2,7 +2,8 @@ const WatchedMoiveList = ({ watched, handle_delete }) => {
     return (
       <ul className="list">
         {watched.map((movie) => (
-          <li key={movie.imdbID}>
+          <li key={movie.imdbid}>
+            {console.log(movie.imdbid)}
             <img src={movie.poster} alt={`${movie.title} poster`} />
             <h3>{movie.Title}</h3>
             <div>

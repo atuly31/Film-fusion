@@ -3,19 +3,16 @@ import bodyParser from "body-parser";
 import db from "./ConfigDB/ConnectDB.js";
 import session from "express-session";
 import cors from "cors";
-import bcrypt from "bcryptjs"; // Changed from bcrypt to bcryptjs
+import bcrypt from "bcrypt";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import dotenv from "dotenv";
 import pgSession from "connect-pg-simple";
-import { verify } from "crypto";
-
+// import { verify } from "crypto";
 dotenv.config();
 const app = express();
 const PORT = 4000;
-
-db.connect();
-
+// db.connect();
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -25,23 +22,15 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(
-  session({
-    store: new (pgSession(session))({
-      pgPromise: db,
-      tableName: "user_sessions",
-    }),
-    secret: "fallbackSecret",
-    resave: true,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 1 day
-      httpOnly: true, // Ensure cookie is accessible only by the server
-      secure: false, // Set to true if using HTTPS
-      sameSite: "lax", // Controls cross-site cookie behavior
-    },
-  })
-);
+    session({
+      secret:  "fallbackSecret",
+      resave: true,
+      saveUninitialized: true, // Do not save empty sessions
+      cookie: { maxAge: 24 * 60 * 60 * 1000 },
+    })
+  );
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -59,17 +48,19 @@ passport.use(
         "SELECT * FROM user_details WHERE email = ($1)",
         [email]
       );
+    
 
       console.log("Data from DB:", data.rowCount);
+      console.log("Password from DB:", password);
       if (data.rowCount === 0) {
         return done(null, false, { message: "No user found" });
       }
-
+      
       const storedPassword = data.rows[0].password;
-      Current_user_id = data.rows[0].id;
-      console.log("Current user:", Current_user_id);
-
-      const isMatch = await bcrypt.compare(password, storedPassword); // bcrypt.compare remains the same
+      console.log(storedPassword)
+    //   Current_user_id = data[0].id;
+    //   console.log("Current uSer:", Current_user_id);
+      const isMatch = await bcrypt.compare(password, storedPassword);
       if (isMatch) {
         return done(null, data.rows[0]);
       } else {
@@ -116,7 +107,7 @@ app.post("/loginSignup", async (req, res) => {
       }
 
       console.log("Hashing password...");
-      const hash = await bcrypt.hash(password, 10); // bcrypt.hash works similarly in bcryptjs
+      const hash = await bcrypt.hash(password, 10);
       console.log("Password hashed:", hash);
 
       console.log("Inserting new user...");
@@ -126,10 +117,11 @@ app.post("/loginSignup", async (req, res) => {
       );
       console.log("New user inserted:", newUser);
 
-      res.status(201).send(newUser);
+      // Current_user_id = newUser.rows[0].id;
+      res.status(201).send(newUser.rows);
     } catch (error) {
       console.error(
-        "Registration Error you are in catch block now:",
+        "Registration Error you are in catch block now :",
         error.message
       );
       res.status(500).send("Error registering user");
@@ -137,6 +129,8 @@ app.post("/loginSignup", async (req, res) => {
   }
 
   if (action === "login") {
+    const { password, email } = req.body;
+    console.log(password, email);
     passport.authenticate("local", (err, user, info) => {
       if (err) {
         return res.status(500).send("Error during login");
@@ -156,17 +150,9 @@ app.post("/loginSignup", async (req, res) => {
 });
 
 app.post("/", async (req, res) => {
-  const {
-    currentUser,
-    title,
-    year,
-    poster,
-    runtime,
-    imdbRating,
-    userRating,
-    imdbID,
-  } = req.body;
-  console.log("Current user Id in post", currentUser);
+  const { currentUser ,title, year, poster, runtime, imdbRating, userRating, imdbID } =
+    req.body;
+  console.log("Cuurent user Id in post", currentUser);
   try {
     await db.query(
       "INSERT INTO LikedMovies (user_id, title, year, poster, runtime, imdbRating, userRating, imdbID) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
@@ -187,7 +173,7 @@ app.post("/", async (req, res) => {
       [Current_user_id]
     );
 
-    res.status(201).send(response);
+    res.status(201).send(response.rows);
   } catch (error) {
     console.error("Error inserting user:", error.message);
     res.status(500).send("Error inserting user");
@@ -195,13 +181,14 @@ app.post("/", async (req, res) => {
 });
 
 app.get("/", async (req, res) => {
-  const { currentUser } = req.query;
+    const { currentUser} = req.query
   try {
+    // Current_user_id = data[0].id;
     const data = await db.query(
       "SELECT * FROM user_details u1 INNER JOIN likedmovies l1 ON u1.id = l1.user_id WHERE user_id = $1",
       [currentUser]
     );
-    res.status(200).send(data);
+    res.status(200).send(data.rows);
   } catch (error) {
     console.error("Profile Fetch Error:", error.message);
     res.status(500).send("Error fetching profile data");
@@ -209,14 +196,14 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/dashboard", async (req, res) => {
-  const { currentUser } = req.query;
-  console.log("In the dashboard", currentUser);
+    const {currentUser} = req.query
+    console.log("in the dashboard",currentUser)
   try {
     const data = await db.query(
       "SELECT * FROM user_details u1 INNER JOIN likedmovies l1 ON u1.id = l1.user_id WHERE user_id = $1",
       [currentUser]
     );
-    res.status(200).send(data);
+    res.status(200).send(data.rows);
   } catch (error) {
     console.error("Profile Fetch Error:", error.message);
     res.status(500).send("Error fetching profile data");
@@ -225,19 +212,18 @@ app.get("/dashboard", async (req, res) => {
 
 app.delete("/", async (req, res) => {
   const { movieID } = req.body;
-  console.log(movieID);
+  console.log(movieID)
   try {
-    const response = await db.query(
-      "DELETE FROM likedmovies WHERE imdbid = $1",
-      [movieID]
-    );
-    console.log(response);
+    const response = await db.query("DELETE FROM likedmovies WHERE imdbid =($1)",[movieID])
+    console.log(response)
     res.status(200).send("Deleted Successfully");
   } catch (error) {
     console.error("Profile Fetch Error:", error.message);
-    res.status(500).send("Error deleting profile data");
-  }
-});
+    res.status(500).send("Error fetching profile data");
+   }
+ 
+
+ });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 export default app;

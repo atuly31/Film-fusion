@@ -91,11 +91,7 @@ export default function App() {
   };
 
   const handle_delete = (movieID) => {
-    setWatched(
-      watched.filter((movie) => {
-        return movie.imdbID !== movieID;
-      })
-    );
+    console.log(movieID);
     deleteMovie(movieID);
   };
 
@@ -338,12 +334,12 @@ const Movies = ({ movie, HandleSelectedID }) => {
 };
 
 const Moive_Summary = ({ watched }) => {
-  const avgImdbRating = average(
+  const avgImdbRating = Math.round(average(
     watched.map((movie) => Number(movie.imdbrating))
-  );
-  const avgUserRating = average(watched.map((movie) => movie.userrating));
+  ),2);
+  const avgUserRating = Math.round(average(watched.map((movie) => movie.userrating)),2);
   const avgRuntime = Math.round(
-    average(watched.map((movie) => movie.runtime)),
+    average(watched.map((movie) => Number(movie.runtime))),
     1
   );
   return (
