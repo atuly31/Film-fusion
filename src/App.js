@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import StarRating from "./Star";
 import { useMovies } from "./useMovies";
-import { useLocalStorage } from "./useLocalStorage";
 import Searchbar from "./SearchButton";
 import Navbar from "./Components/NavigationBar";
 import WatchedMoiveList  from "./WatchedMoiveList";
@@ -13,69 +12,75 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [selectedID, SetselectedID] = useState("");
   const [movies, iserror, isLodaing] = useMovies(query, Close_btn);
-  const [watched, setWatched] = useState([])
-  
+  const [watched, setWatched] = useState([]);
+
   const HandleSelectedID = (selectedID) => {
     SetselectedID(selectedID);
   };
+
   console.log(watched);
+
   function Close_btn() {
     SetselectedID("");
   }
 
-  const add_moive_to_List = (Moive) => {
-    setWatched((pre) => [...pre, Moive]
-    
-  );
-    
-  };
+
   useEffect(() => {
     const fetchUserData = async () => {
+      const val = localStorage.getItem("user");
+      const User_data = JSON.parse(val);
       try {
-        
-        const response = await axios.get("http://localhost:8080", {
-          withCredentials: true,});
-          console.log(response.data);
-          setWatched(response.data)
+        const response = await axios.get("http://localhost:4000", {
+          withCredentials: true,
+          params: {
+             currentUser: User_data.id
+          }
+        });
+        console.log(response.data);
+        setWatched(response.data);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
       }
     };
 
     fetchUserData();
-  },[watched]);
+  },[]);
 
-
-  const sendData = async(movie_list)=>{
+  const sendData = async (movie_list) => {
     try {
-      const response = await axios.post('http://localhost:8080', movie_list);
-        if(response.status===201){
-          console.log("Data sent to server");
-          alert("Data sent to server successfully!");
-        }
-        else{
-          console.log("Failed to send data to server");
-          alert("Failed to send data to server!");
-        }
+      const val = localStorage.getItem("user");
+      const User_data = JSON.parse(val);
+      const response = await axios.post("http://localhost:4000", {
+        ...movie_list,
+        currentUser: User_data.id,
+      });
 
-      
+      if (response.status === 201) {
+        console.log("Data sent to server");
+        alert("Data sent to server successfully!");
+      } else {
+        console.log("Failed to send data to server");
+        alert("Failed to send data to server!");
+      }
     } catch (error) {
       console.error("Error sending data:", error);
       alert("An error occurred while sending data.");
     }
-  }
- console.log(watched)
-  const deleteMovie =  async(movieID)=>{
+  };
+
+  console.log(watched);
+
+  const deleteMovie = async (movieID) => {
     try {
-      console.log(movieID)
-      const response  = await axios.delete("http://localhost:8080", { data: { movieID } // Sending movieID in the request body 
-        });
-      
-      if(response.status === 200){
+      console.log(movieID);
+      const response = await axios.delete("http://localhost:4000", {
+        data: { movieID },
+      });
+
+      if (response.status === 200) {
         console.log("Movie deleted successfully");
         alert("Movie deleted successfully!");
-      }
-      else{
+      } else {
         console.log("Failed to delete movie");
         alert("Failed to delete movie!");
       }
@@ -83,8 +88,7 @@ export default function App() {
       console.error("Error deleting movie:", error);
       alert("An error occurred while deleting movie.");
     }
-  } 
-      
+  };
 
   const handle_delete = (movieID) => {
     setWatched(
@@ -94,11 +98,10 @@ export default function App() {
     );
     deleteMovie(movieID);
   };
-  
+
   return (
     <>
       <Navbar>
-        {" "}
         <Searchbar query={query} setQuery={setQuery} />
       </Navbar>
       <Main>
@@ -113,10 +116,10 @@ export default function App() {
         <WatchedBox>
           {selectedID ? (
             <Moive_details
-              sendData ={sendData}
+              sendData={sendData}
               selectedID={selectedID}
               Close_btn={Close_btn}
-              add_moive_to_List={add_moive_to_List}
+              // add_moive_to_List={add_moive_to_List}
               watched={watched}
             />
           ) : (
@@ -133,6 +136,7 @@ export default function App() {
     </>
   );
 }
+
 
 const Loader = () => {
   return (
@@ -192,7 +196,7 @@ const WatchedBox = ({ children }) => {
 const Moive_details = ({
   selectedID,
   Close_btn,
-  add_moive_to_List,
+  // add_moive_to_List,
   watched,
   sendData
 }) => {
@@ -226,7 +230,7 @@ const Moive_details = ({
       userRating,
       runtime: Number(runtime.split(" ").at(0)),
     };
-    add_moive_to_List(watchedMovie);
+    // add_moive_to_List(watchedMovie);
    
     sendData(watchedMovie);
     
@@ -308,7 +312,7 @@ const Moive_details = ({
   );
 };
 
-const MoivesList = ({ movies, HandleSelectedID, add_moive_to_List }) => {
+const MoivesList = ({ movies, HandleSelectedID }) => {
   return (
     <ul className="list list-movies">
       {movies?.map((movie) => (

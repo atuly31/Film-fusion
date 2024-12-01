@@ -38,10 +38,10 @@ const LoginSignup = () => {
 
   const submitLoginForm = async(data) => {
     const payload = {...data, action: "login"};
-    const response = await axios.post('http://localhost:8080/loginSignup',payload);
+    const response = await axios.post('http://localhost:4000/loginSignup',payload, {credentials: "include"});
     const User_data = response.data
     console.log(User_data)
-    localStorage.removeItem("user");
+    // localStorage.removeItem("user");
     localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
    
     if(response.status === 200){
@@ -52,22 +52,27 @@ const LoginSignup = () => {
     }
     
   }
-
-  const submitForm = async(data) => {
-    const payload = {...data, action: "register"};
-    const response = await axios.post('http://localhost:8080/loginSignup',payload);
-    const User_data = response.data
-    localStorage.removeItem("user");
-    localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
-    if(response.status === 201){
-      alert("Successfully registered!");
-      Nav("/")
-    }else if (response.data ==="User Already Exist") alert("User Already Exist");
-    else{
-      alert("Registration failed!");
+  const submitForm = async (data) => {
+    try {
+      const payload = { ...data, action: "register" };
+      const response = await axios.post('http://localhost:4000/loginSignup', payload, { withCredentials: true });
+      const User_data = response.data;
+  
+      if (response.status === 201) {
+        localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
+        alert("Successfully registered!");
+        Nav("/");
+      } else if (response.data === "User Already Exist") {
+        alert("User Already Exist");
+      } else {
+        alert("Registration failed!");
+      }
+    } catch (error) {
+      console.error("Registration Error:", error);
+      alert("An error occurred during registration.");
     }
-    console.log(response);
   };
+  
 
   const handleSignUpClick = () => {
     setRightPanelActive(true);

@@ -75,7 +75,11 @@ function Navbar( {children}) {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
+  const HandleLogout=()=>{
+    localStorage.removeItem("user")
+    alert("Successfully logged out")
+    nav("/");
+  }
   useEffect(() => {
     function handleRightClick(e) {
       e.preventDefault();
@@ -242,7 +246,7 @@ function Navbar( {children}) {
               <MenuItem  onClick={() => {  HandleRedirectdashboard()}}>
                 <Typography sx={{ textAlign: "center" }}>Dashboard</Typography>
               </MenuItem>
-              <MenuItem  onClick={() => {  HandleRediect()}}>
+              <MenuItem  onClick={() => {  HandleLogout()}}>
                 <Typography sx={{ textAlign: "center" }}>Logout</Typography>
               </MenuItem>
           </Menu>

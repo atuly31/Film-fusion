@@ -27,8 +27,12 @@ const ProfilePage = () => {
       try {
         const val = localStorage.getItem("user");
         const User_data = JSON.parse(val)
-        const userLikedMovie = await axios.get("http://localhost:8080/dashboard", {
-          withCredentials: true,});
+        const userLikedMovie = await axios.get("http://localhost:4000/dashboard", {
+          withCredentials: true,
+          params:{
+            currentUser:User_data.id
+          }
+        });
          console.log(userLikedMovie.data)
         setUserName(User_data.name);
         setUserEmail(User_data.email);
