@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import  "./LoginSignup.css"
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import Modal from "../Components/Modal";
 const LoginSignup = () => {
   const [isRightPanelActive, setRightPanelActive] = useState(false);
+  const [isOpen, Setisopen] = useState(true);
   const  Nav = useNavigate();
-  let User = { name: "", email: "", password: "" };
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -36,12 +37,31 @@ const LoginSignup = () => {
     submitLoginForm(LoginData);
   };
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const val = localStorage.getItem("user");
+        const User_data = JSON.parse(val)
+        if (!User_data) {
+          Setisopen(false);
+          return;
+        }
+        else{
+          Setisopen((pre)=>!pre);
+          
+      } } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  },[]);
+
   const submitLoginForm = async(data) => {
     const payload = {...data, action: "login"};
-    const response = await axios.post('http://localhost:4000/loginSignup',payload, {credentials: "include"});
+    const response = await axios.post('http://localhost:4000/loginSignup',payload, { withCredentials: true });
     const User_data = response.data
     console.log(User_data)
-    // localStorage.removeItem("user");
     localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
    
     if(response.status === 200){
@@ -55,13 +75,14 @@ const LoginSignup = () => {
   const submitForm = async (data) => {
     try {
       const payload = { ...data, action: "register" };
+      console.log(payload)
       const response = await axios.post('http://localhost:4000/loginSignup', payload, { withCredentials: true });
       const User_data = response.data;
-  
+      console.log("before try catch")
       if (response.status === 201) {
         localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
         alert("Successfully registered!");
-        Nav("/");
+        setRightPanelActive(false)
       } else if (response.data === "User Already Exist") {
         alert("User Already Exist");
       } else {
@@ -84,7 +105,9 @@ const LoginSignup = () => {
   };
 
   return (
-    <body className="LoginSignup-body">
+    <>{isOpen ? (<Modal isOpen={isOpen} Setisopen ={Setisopen}/>):
+    (
+     <body className="LoginSignup-body">
       <div
         className={`container ${
           isRightPanelActive ? "right-panel-active" : ""
@@ -207,7 +230,8 @@ const LoginSignup = () => {
           </div>
         </div>
       </div>
-    </body>
+    </body>)}
+    </>
   );
 };
 

@@ -20,6 +20,7 @@ function Navbar( {children}) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [countryAnchorEl, setCountryAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
+  const [userName, setUserName] = useState("");
   const [Genre, setGenre] = useState("");
   const [Country, setCountry] = useState("");
   const nav = useNavigate();
@@ -93,6 +94,23 @@ function Navbar( {children}) {
       document.removeEventListener("click", handleRightClick);
     };
   }, []);
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const val = localStorage.getItem("user");
+        const User_data = JSON.parse(val)
+        setUserName(User_data.name);
+        
+          
+       } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  },[]);
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#111" }}>
@@ -218,7 +236,7 @@ function Navbar( {children}) {
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
               {/* <Avatar alt="Remy Sharp" src={ "/static/images/avatar/2.jpg"} /> */
-              <Avatar>A</Avatar>}
+              <Avatar>{userName.charAt(0).toUpperCase()}</Avatar>}
             </IconButton>
           </Tooltip>
           <Menu

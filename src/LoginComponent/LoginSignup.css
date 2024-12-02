@@ -5,7 +5,7 @@
 }
 
 body.LoginSignup-body {
-  background: #070707;
+  /* background: #070707; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,6 +17,7 @@ body.LoginSignup-body {
 }
 
 h1.LoginSignup-h1 {
+  color: black;
   font-weight: bold;
   margin: 0;
 }
@@ -34,7 +35,7 @@ span.LoginSignup-span{
 }
 
 a.LoginSignup-a {
-  color: #333;
+  color: #949090;
   font-size: 14px;
   text-decoration: none;
   margin: 15px 0;
@@ -42,8 +43,8 @@ a.LoginSignup-a {
 
 button.LoginSignup-button {
   border-radius: 20px;
-  border: 1px solid #FF4B2B;
-  background-color: #FF4B2B;
+  border: 1px solid #362a28;
+  background-color: #2a34c7d5;
   color: #FFFFFF;
   font-size: 12px;
   font-weight: bold;
@@ -67,7 +68,8 @@ button.ghost {
 }
 
 form.LoginSignup-form {
-  background-color: #FFFFFF;
+background-color: #333;
+/* background-color: #; */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,15 +80,16 @@ form.LoginSignup-form {
 }
 
 input.LoginSignup-input {
-  background-color: #eee;
+  background-color: #bab6b6;
   border: none;
+  border-radius: 10px;
   padding: 12px 15px;
   margin: 8px 0;
   width: 100%;
 }
 
 .container {
-  background-color: #fff;
+  background-color: #f9f7fe;
   border-radius: 10px;
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
   position: relative;
@@ -158,8 +161,8 @@ input.LoginSignup-input {
 
 .overlay {
   background: #FF416C;
-  background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);
-  background: linear-gradient(to right, #FF4B2B, #FF416C);
+  background: -webkit-linear-gradient(to right, #474545, #FF416C);
+  background: linear-gradient(to right, #474545, #41ff477b);
   background-repeat: no-repeat;
   background-size: cover;
   background-position: 0 0;
