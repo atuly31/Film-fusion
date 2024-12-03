@@ -4,6 +4,7 @@ import App from "./App";
 import { Routes, Route, Navigate } from "react-router-dom";
 import LoginSignup from "./LoginComponent/LoginSignup";
 import ProfilePage from "./Components/Profile";
+import MovieCarouse from "./Components/HomePage";
 const Main = () => {
   return (
     <>

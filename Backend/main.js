@@ -121,7 +121,7 @@ app.post("/", async (req, res) => {
 
     const response = await db.query(
       "SELECT * FROM user_details u1 INNER JOIN LikedMovies l1 ON u1.id = l1.user_id WHERE user_id = $1",
-      [Current_user_id]
+      [currentUser]
     );
 
     res.status(201).send(response.rows);

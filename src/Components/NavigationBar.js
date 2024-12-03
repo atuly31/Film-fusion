@@ -13,15 +13,15 @@ import {
   Popover,
   IconButton,
 } from "@mui/material";
-
+import axios from "axios";
 // const settings = ["Profile", "Dashboard", "Logout"];
 
-function Navbar( {children}) {
+function Navbar( {children,handleGenre}) {
   const [anchorEl, setAnchorEl] = useState(null);
   const [countryAnchorEl, setCountryAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [userName, setUserName] = useState("");
-  const [Genre, setGenre] = useState("");
+  // const [Genre, setGenre] = useState("");
   const [Country, setCountry] = useState("");
   const nav = useNavigate();
   const genres = [
@@ -39,15 +39,48 @@ function Navbar( {children}) {
     "Taiwan", "Thailand", "United Kingdom", "United States of America"
   ];
 
-  const handleGenre = (genre) => {
-    console.log(`selected ${genre}`);
-    setGenre(genre);
-  };
+  
+  // const handleGenre = (genre) => {
+  //   console.log(`selected ${genre}`);
+  //   setGenre(genre);
+  // };
   const handleCountry = (country) => {
     console.log(`selected ${country}`);
     setCountry(country);
   };
-  
+  // console.log(`selected for API${Genre}`);
+  // useEffect(() => {
+  //   const options = {
+  //     method: "GET",
+  //     url: "https://streaming-availability.p.rapidapi.com/shows/search/filters",
+  //     params: {
+  //       country: "us",
+  //       series_granularity: "show",
+  //       genres: `${Genre}`,
+  //       order_direction: "asc",
+  //       order_by: "original_title",
+  //       genres_relation: "and",
+  //       output_language: "en",
+  //       show_type: "movie",
+  //     },
+  //     headers: {
+  //       "x-rapidapi-key":
+  //         "24d408eb40mshf1a8db0c4761c2ap13353cjsn8a1054ab97c7",
+  //       "x-rapidapi-host": "streaming-availability.p.rapidapi.com",
+  //     },
+  //   };
+
+  //   async function fetchGenre() {
+      
+  //     try {
+  //       const response = await axios.request(options);
+  //       console.log(response.data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  //   fetchGenre();
+  // },[Genre]);
   function HandleRediect () {
     nav("/loginSignup")
   }
@@ -140,103 +173,134 @@ function Navbar( {children}) {
           <Button>
             <Typography variant="body1">Home</Typography>
           </Button>
-          <Button onMouseEnter={handlePopoverOpen}>
-            <Typography variant="body1" sx={{ cursor: "pointer", color: "#00d2ff" }}>
-              Genre
-            </Typography>
-          </Button>
-          <Popover
-            open={Boolean(anchorEl)}
-            anchorEl={anchorEl}
-            onClose={handlePopoverClose}
-           
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-            sx={{
-              pointerEvents: "none",
-              "& .MuiPopover-paper": {
-                backgroundColor: "#333",
-                padding: "15px",
-                borderRadius: "10px",
-                color: "#fff",
-                display: "grid",
-                gridTemplateColumns: "repeat(3, minmax(100px, 1fr))",
-                gap: "10px",
-                pointerEvents: "auto",
-              },
-            }}
-            disableRestoreFocus
-          >
-            {genres.map((genre) => (
+          <div onMouseLeave={handlePopoverClose}>
+            <Button
+              onMouseEnter={handlePopoverOpen}
+              onClick={handlePopoverOpen}
+            >
               <Typography
-                key={genre}
-                variant="body2"
-                sx={{ cursor: "pointer", fontSize: "10px" }}
+                variant="body1"
+                sx={{ cursor: "pointer", color: "#00d2ff" }}
               >
-                <ul className="genre-list">
-                  <li onClick={() => handleGenre(genre)}>{genre}</li>
-                </ul>
+                Genre
               </Typography>
-            ))}
-          </Popover>
-          <Button onMouseEnter={handlePopoverOpenCountry}>
-            <Typography variant="body1" sx={{ cursor: "pointer", color: "#00d2ff" }}>
-              Country
-            </Typography>
-          </Button>
-          <Popover
-            open={Boolean(countryAnchorEl)}
-            anchorEl={countryAnchorEl}
-            onClose={handlePopoverCloseCountry}
-            anchorOrigin={{
-              vertical: "bottom",
-              horizontal: "center",
-            }}
-            transformOrigin={{
-              vertical: "top",
-              horizontal: "center",
-            }}
-            sx={{
-              pointerEvents: "none",
-              "& .MuiPopover-paper": {
-                backgroundColor: "#333",
-                padding: "15px",
-                borderRadius: "10px",
-                color: "#fff",
-                display: "grid",
-                gridTemplateColumns: "repeat(3, minmax(100px, 1fr))",
-                gap: "10px",
-                pointerEvents: "auto",
-              },
-            }}
-            disableRestoreFocus
-          >
-            {countries.map((country) => (
+            </Button>
+            <div
+              role="presentation"
+              className={`MuiPopover-root MuiModal-root ${
+                `${Boolean(anchorEl)}` ? "" : "inert"
+              }`}
+              inert={!`${Boolean(anchorEl)}` ? "true" : undefined} // Conditional inert
+            >
+              <Popover
+                open={Boolean(anchorEl)}
+                anchorEl={anchorEl}
+                onClose={handlePopoverClose}
+                onMouseLeave={handlePopoverClose}
+                disableEnforceFocus
+                disableAutoFocus
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "center",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "center",
+                }}
+                sx={{
+                  pointerEvents: "none",
+                  "& .MuiPopover-paper": {
+                    backgroundColor: "#333",
+                    padding: "15px",
+                    borderRadius: "10px",
+                    color: "#fff",
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, minmax(100px, 1fr))",
+                    gap: "10px",
+                    pointerEvents: "auto",
+                  },
+                }}
+                
+              >
+                {genres.map((genre) => (
+                  <Typography
+                    key={genre}
+                    variant="body2"
+                    sx={{ cursor: "pointer", fontSize: "10px" }}
+                  >
+                    <ul className="genre-list">
+                      <li onClick={() => handleGenre(genre)}>{genre}</li>
+                    </ul>
+                  </Typography>
+                ))}
+              </Popover>
+            </div>
+          </div>
+          <div onMouseLeave={handlePopoverCloseCountry}>
+            <Button
+              onMouseEnter={handlePopoverOpenCountry}
+              onClick={handlePopoverOpenCountry}
+            >
               <Typography
-                key={country}
-                variant="body2"
-                sx={{ cursor: "pointer", fontSize: "10px" }}
+                variant="body1"
+                sx={{ cursor: "pointer", color: "#00d2ff" }}
               >
-                <ul className="genre-list">
-                  <li onClick={() => handleCountry(country)}>{country}</li>
-                </ul>
+                Country
               </Typography>
-            ))}
-          </Popover>
+            </Button>
+            <Popover
+              disableEnforceFocus
+              disableAutoFocus
+              open={Boolean(countryAnchorEl)}
+              anchorEl={countryAnchorEl}
+              onClose={handlePopoverCloseCountry}
+              onMouseLeave={handlePopoverCloseCountry}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "center",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "center",
+              }}
+              sx={{
+                pointerEvents: "none",
+                "& .MuiPopover-paper": {
+                  backgroundColor: "#333",
+                  padding: "15px",
+                  borderRadius: "10px",
+                  color: "#fff",
+                  display: "grid",
+                  gridTemplateColumns: "repeat(3, minmax(100px, 1fr))",
+                  gap: "10px",
+                  pointerEvents: "auto",
+                },
+              }}
+              disableRestoreFocus
+            >
+              {countries.map((country) => (
+                <Typography
+                  key={country}
+                  variant="body2"
+                  sx={{ cursor: "pointer", fontSize: "10px" }}
+                >
+                  <ul className="genre-list">
+                    <li onClick={() => handleCountry(country)}>{country}</li>
+                  </ul>
+                </Typography>
+              ))}
+            </Popover>
+          </div>
         </Box>
-        
-        <Box sx={{ display: "flex", gap: "10px", alignItems: "center" } }>
-       {children}
+
+        <Box sx={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          {children}
           <Tooltip title="Open settings">
             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-              {/* <Avatar alt="Remy Sharp" src={ "/static/images/avatar/2.jpg"} /> */
-              <Avatar>{userName.charAt(0).toUpperCase()}</Avatar>}
+              {
+                /* <Avatar alt="Remy Sharp" src={ "/static/images/avatar/2.jpg"} /> */
+                <Avatar>{userName.charAt(0).toUpperCase()}</Avatar>
+              }
             </IconButton>
           </Tooltip>
           <Menu
@@ -258,15 +322,27 @@ function Navbar( {children}) {
                 <Typography sx={{ textAlign: "center" }}>{setting}</Typography>
               </MenuItem>
             ))} */}
-            <MenuItem  onClick={() => {  HandleRediect()}}>
-                <Typography sx={{ textAlign: "center" }}>Profile</Typography>
-              </MenuItem>
-              <MenuItem  onClick={() => {  HandleRedirectdashboard()}}>
-                <Typography sx={{ textAlign: "center" }}>Dashboard</Typography>
-              </MenuItem>
-              <MenuItem  onClick={() => {  HandleLogout()}}>
-                <Typography sx={{ textAlign: "center" }}>Logout</Typography>
-              </MenuItem>
+            <MenuItem
+              onClick={() => {
+                HandleRediect();
+              }}
+            >
+              <Typography sx={{ textAlign: "center" }}>Profile</Typography>
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                HandleRedirectdashboard();
+              }}
+            >
+              <Typography sx={{ textAlign: "center" }}>Dashboard</Typography>
+            </MenuItem>
+            <MenuItem
+              onClick={() => {
+                HandleLogout();
+              }}
+            >
+              <Typography sx={{ textAlign: "center" }}>Logout</Typography>
+            </MenuItem>
           </Menu>
         </Box>
       </Toolbar>

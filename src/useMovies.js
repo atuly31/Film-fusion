@@ -3,6 +3,7 @@ import { useState,useEffect } from "react";
 export const useMovies = (query,callback) => {
     const [movies, setMovies] = useState([]);
     const [isLodaing , setLoading] = useState(false);
+    // const [Genre, setGenre] = useState("");
     const  [iserror, seterror] = useState("")
     
     useEffect(function () {
@@ -19,6 +20,7 @@ export const useMovies = (query,callback) => {
             console.log(data);
             if(data.Response === 'False') throw new Error("Moive Not Found");
             setMovies(data.Search);
+            // setGenre("")
             seterror("");
            
           }
@@ -47,5 +49,5 @@ export const useMovies = (query,callback) => {
       [query]
     );
   
-     return [movies,iserror,isLodaing] 
+     return [movies,iserror,isLodaing,setMovies] 
 };

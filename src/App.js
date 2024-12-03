@@ -5,15 +5,24 @@ import Searchbar from "./SearchButton";
 import Navbar from "./Components/NavigationBar";
 import WatchedMoiveList  from "./WatchedMoiveList";
 import axios from "axios";
+import MovieCarousel from "./Components/HomePage";
+
 const average = (arr) =>
   arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0);
 
 export default function App() {
   const [query, setQuery] = useState("");
   const [selectedID, SetselectedID] = useState("");
-  const [movies, iserror, isLodaing] = useMovies(query, Close_btn);
+  const [movies, iserror, isLodaing,] = useMovies(query, Close_btn);
   const [watched, setWatched] = useState([]);
-
+  const [Genre, setGenre] = useState("")
+  const [genremovies, setGenremovies] = useState([])
+  const handleGenre = (genre) => {
+    console.log(`selected ${genre}`);
+    setGenre(genre);
+  };
+  
+  
   const HandleSelectedID = (selectedID) => {
     SetselectedID(selectedID);
   };
@@ -24,6 +33,7 @@ export default function App() {
     SetselectedID("");
   }
 
+  console.log(query)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -42,7 +52,7 @@ export default function App() {
         console.error("Failed to fetch user data:", error);
       }
     };
-
+    
     fetchUserData();
   },[]);
 
@@ -90,23 +100,67 @@ export default function App() {
     }
   };
 
+  useEffect(() => {
+    const options = {
+      method: "GET",
+      url: "https://streaming-availability.p.rapidapi.com/shows/search/filters",
+      params: {
+        country: "us",
+        series_granularity: "show",
+        genres: `${Genre}`,
+        order_direction: "asc",
+        order_by: "original_title",
+        genres_relation: "and",
+        output_language: "en",
+        show_type: "movie",
+      },
+      headers: {
+        "x-rapidapi-key":
+          "24d408eb40mshf1a8db0c4761c2ap13353cjsn8a1054ab97c7",
+        "x-rapidapi-host": "streaming-availability.p.rapidapi.com",
+      },
+    };
+
+    async function fetchGenre() {
+      // if(!query) {
+      //   setGenre("")
+      //   return
+      // }
+      try {
+        const response = await axios.request(options);
+        console.log(response.data.shows);
+        setGenremovies(response.data.shows);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchGenre();
+    
+  },[Genre]);
+
   const handle_delete = (movieID) => {
     console.log(movieID);
     deleteMovie(movieID);
   };
 
   return (
+    
     <>
-      <Navbar>
+  
+      <Navbar handleGenre = {handleGenre}>
         <Searchbar query={query} setQuery={setQuery} />
       </Navbar>
+      
       <Main>
         <ListBox>
-          {isLodaing && <Loader />}
-          {!isLodaing && !iserror && (
-            <MoivesList movies={movies} HandleSelectedID={HandleSelectedID} />
+          
+          {!query && <MovieCarousel/>}
+          {/* {isLodaing && <Loader />} */}
+          {query && (
+            <MoivesList movies={movies} genremovies = {genremovies} HandleSelectedID={HandleSelectedID} Genre ={Genre}/>
           )}
-          {iserror && <Error_message message={iserror} />}
+          {!Genre &&<MoivesList movies={movies} genremovies = {genremovies} Genre={Genre} HandleSelectedID={HandleSelectedID} />}
+          {/* {iserror && <Error_message message={iserror} />} */}
         </ListBox>
 
         <WatchedBox>
@@ -161,6 +215,7 @@ const ListBox = ({ children }) => {
   return (
     <>
       <div className="box">
+
         <button
           className="btn-toggle"
           onClick={() => setIsOpen1((open) => !open)}
@@ -168,7 +223,9 @@ const ListBox = ({ children }) => {
           {isOpen1 ? "–" : "+"}
         </button>
         {isOpen1 && children}
+
       </div>
+
     </>
   );
 };
@@ -192,7 +249,6 @@ const WatchedBox = ({ children }) => {
 const Moive_details = ({
   selectedID,
   Close_btn,
-  // add_moive_to_List,
   watched,
   sendData
 }) => {
@@ -308,30 +364,72 @@ const Moive_details = ({
   );
 };
 
-const MoivesList = ({ movies, HandleSelectedID }) => {
+const MoivesList = ({ movies, HandleSelectedID ,genremovies,Genre}) => {
+  console.log(movies);
+  console.log(Genre);
   return (
     <ul className="list list-movies">
-      {movies?.map((movie) => (
-        <Movies movie={movie} HandleSelectedID={HandleSelectedID} />
-      ))}
+      {Genre===""
+        ? movies.map((movie) => (
+            <Movies
+              key={movie.imdbID} // Add a key for better list rendering
+              movie={movie}
+              HandleSelectedID={HandleSelectedID}
+              Genre={Genre}
+            />
+          ))
+        : genremovies.map((movie) => (
+            <Movies
+              key={movie.imdbID} // Ensure unique keys are added
+              movie={movie}
+              HandleSelectedID={HandleSelectedID}
+              Genre={Genre}
+            />
+          ))}
     </ul>
   );
 };
 
-const Movies = ({ movie, HandleSelectedID }) => {
+const Movies = ({ movie, HandleSelectedID, Genre }) => {
+  // Destructuring properties conditionally
+  // const { Title, Year, Poster, imageSet } = movie;
+
   return (
     <li onClick={() => HandleSelectedID(movie.imdbID)} key={movie.imdbID}>
-      <img src={movie.Poster} alt={`${movie.Title} poster`} />
-      <h3>{movie.Title}</h3>
-      <div>
-        <p>
-          <span>🗓</span>
-          <span>{movie.Year}</span>
-        </p>
-      </div>
+      {Genre==="" ? (
+        <>
+        <img src={movie.Poster} alt={`${movie.Title} poster`} />
+          <h3>{movie.Title}</h3>
+          <div>
+            <p>
+              <span>🗓</span>
+              <span>{movie.Year}</span>
+            </p>
+          
+          </div>
+        
+        
+        </>
+      ) : (
+        <>
+        <img
+            src={movie.imageSet.verticalPoster?.w720}
+            alt={`${movie.title} poster`}
+          />
+          <h3>{movie.title }</h3>
+          <div>
+            <p>
+              <span>🗓</span>
+              <span>{movie.releaseYear}</span>
+            </p>
+          </div>
+         
+        </>
+      )}
     </li>
   );
 };
+
 
 const Moive_Summary = ({ watched }) => {
   const avgImdbRating = Math.round(average(
