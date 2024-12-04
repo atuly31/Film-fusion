@@ -154,7 +154,7 @@ export default function App() {
       <Main>
         <ListBox>
           
-          {!query && <MovieCarousel/>}
+          {!query&& <MovieCarousel/>}
           {/* {isLodaing && <Loader />} */}
           {query && (
             <MoivesList movies={movies} genremovies = {genremovies} HandleSelectedID={HandleSelectedID} Genre ={Genre}/>

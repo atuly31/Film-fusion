@@ -58,7 +58,8 @@ const LoginSignup = () => {
   },[]);
 
   const submitLoginForm = async(data) => {
-    const payload = {...data, action: "login"};
+    try{
+      const payload = {...data, action: "login"};
     const response = await axios.post('http://localhost:4000/loginSignup',payload, { withCredentials: true });
     const User_data = response.data
     console.log(User_data)
@@ -67,10 +68,15 @@ const LoginSignup = () => {
     if(response.status === 200){
       alert("Login Successful!");
       Nav("/dashboard");
-    }else if(response.data === "Invalid Credentials"){
-      alert("Login failed!");
     }
-    
+
+    } catch(err){
+    if(err.response.status === 401){
+      alert("Please Register ");
+      SetLoginData({ email: '', password: '' });
+      setRightPanelActive(true);
+    }
+  }
   }
   const submitForm = async (data) => {
     try {
@@ -83,14 +89,19 @@ const LoginSignup = () => {
         localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
         alert("Successfully registered!");
         setRightPanelActive(false)
-      } else if (response.data === "User Already Exist") {
-        alert("User Already Exist");
-      } else {
+      }  
+    } catch (err) {
+      if (err.response.status === 409) {
+        alert("User Already Exist...Please Login");
+        setFormData({name:"",email:"",password:""})
+        setRightPanelActive(false)
+        
+      }
+      else {
         alert("Registration failed!");
       }
-    } catch (error) {
-      console.error("Registration Error:", error);
-      alert("An error occurred during registration.");
+      // console.error("Registration Error:", error);
+      // alert("An error occurred during registration.");
     }
   };
   
@@ -139,6 +150,7 @@ const LoginSignup = () => {
               placeholder="Name"
               value={formData.name}
               onChange={handleChange}
+              required ={ true}
             />
             <input
               className="LoginSignup-input"
@@ -147,6 +159,7 @@ const LoginSignup = () => {
               value={formData.email}
               placeholder="Email"
               onChange={handleChange}
+              required ={ true}
             />
             <input
               className="LoginSignup-input"
@@ -155,6 +168,7 @@ const LoginSignup = () => {
               value={formData.password}
               placeholder="Password"
               onChange={handleChange}
+              required ={ true}
             />
             <button className="LoginSignup-button">Sign Up</button>
           </form>
@@ -182,7 +196,7 @@ const LoginSignup = () => {
               placeholder="Email"
               onChange={handleloginData }
               value={LoginData.email}
-              
+              required ={ true}
             />
             <input
               className="LoginSignup-input"
@@ -191,6 +205,7 @@ const LoginSignup = () => {
               name="password"
               value={LoginData.password}
               onChange={handleloginData}
+              required ={ true}
             />
             <a className="LoginSignup-a" href="#">
               Forgot your password?

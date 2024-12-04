@@ -69,8 +69,9 @@ app.post("/loginSignup", async (req, res) => {
   if (action === "login") {
     const { password, email } = req.body;
     console.log("login", password, email);
-  
+     console.log(email.length)
     try {
+      
       const data = await db.query(
         "SELECT * FROM user_details WHERE email = ($1)",
         [email]
