@@ -154,7 +154,7 @@ export default function App() {
       <Main>
         <ListBox>
           
-          {query===""&& <MovieCarousel handleMovieID={handleMovieID}/>}
+          {query==="" && genre==="" && <MovieCarousel handleMovieID={handleMovieID}/>}
           {/* {isLodaing && <Loader />} */}
           {query!=="" && (
             <MoivesList movies={movies} genremovies = {genremovies} HandleSelectedID={HandleSelectedID} Genre ={Genre}/>
@@ -300,31 +300,31 @@ const Moive_details = ({
     getMoviesByID();
   }, [selectedID]);
 
-  useEffect(() => {
+  // useEffect(() => {
     
-      const fetchMovieDetails = async () => {
-        try {
-          const response = await axios.get(`https://api.themoviedb.org/3/movie/${movie_ID}`, {
-            params: { language: 'en-US' },
-            headers: {
-              accept: 'application/json',
-              Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDM5YTkzYTc0NjA4ZTEyZjZjY2UwOTMzODYzMzRiYiIsIm5iZiI6MTcyNTAxNjM1MS41MTQsInN1YiI6IjY2ZDFhOTFmMDkwOTY5OTQ2MWI1ZjBmYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eGbu-E_6_xTsqX2onqZ_M5mfwJwYcqUuJXt_ewE5PEE'
-            }
-          });
-          const dataa = response.data
-          setMovie(dataa);
-          console.log(response.data); // Log the response data
-        } catch (error) {
-          console.error("Error fetching movie details:", error.response?.data || error.message);
-        }
+  //     const fetchMovieDetails = async () => {
+  //       try {
+  //         const response = await axios.get(`https://api.themoviedb.org/3/movie/${movie_ID}`, {
+  //           params: { language: 'en-US' },
+  //           headers: {
+  //             accept: 'application/json',
+  //             Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDM5YTkzYTc0NjA4ZTEyZjZjY2UwOTMzODYzMzRiYiIsIm5iZiI6MTcyNTAxNjM1MS41MTQsInN1YiI6IjY2ZDFhOTFmMDkwOTY5OTQ2MWI1ZjBmYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eGbu-E_6_xTsqX2onqZ_M5mfwJwYcqUuJXt_ewE5PEE'
+  //           }
+  //         });
+  //         const dataa = response.data
+  //         setMovie(dataa);
+  //         console.log(response.data); // Log the response data
+  //       } catch (error) {
+  //         console.error("Error fetching movie details:", error.response?.data || error.message);
+  //       }
        
-      };
+  //     };
 
       
       
     
-    fetchMovieDetails()
-  }, [movie_ID]);
+  //   fetchMovieDetails()
+  // }, [movie_ID]);
 
 
   useEffect(
