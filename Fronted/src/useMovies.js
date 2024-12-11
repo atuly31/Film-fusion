@@ -3,9 +3,8 @@ import { useState,useEffect } from "react";
 export const useMovies = (query,callback) => {
     const [movies, setMovies] = useState([]);
     const [isLodaing , setLoading] = useState(false);
-    // const [Genre, setGenre] = useState("");
     const  [iserror, seterror] = useState("")
-    
+    const Key = process.env.REACT_APP_API_KEY
     useEffect(function () {
      
       const controller = new AbortController();
@@ -13,7 +12,7 @@ export const useMovies = (query,callback) => {
           try{
             setLoading(true);
             seterror("");
-            const response = await fetch(`https://www.omdbapi.com/?apikey=d855abd9&s=${query}`,
+            const response = await fetch(`https://www.omdbapi.com/?apikey=${Key}&s=${query}`,
             { signal: controller.signal })
             if(!response.ok) throw new Error("Something  wrong");
             const  data = await response.json();

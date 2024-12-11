@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import Navbar from "./Components/NavigationBar";
+import React from "react";
 import App from "./App";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route} from "react-router-dom";
 import LoginSignup from "./LoginComponent/LoginSignup";
 import ProfilePage from "./Components/Profile";
-import MovieCarouse from "./Components/HomePage";
+
 const Main = () => {
   return (
     <>
@@ -17,7 +16,6 @@ const Main = () => {
             </>
           }
         />
-        {/* <Route path="/profile" element={<ProfilePage/>}></Route> */}
         <Route path="/loginSignup" element={<LoginSignup />}></Route>
         <Route path="/dashboard" element={<ProfilePage />}></Route>
       </Routes>

@@ -1,4 +1,4 @@
-import { react, useEffect, useState, useRef } from "react";
+import {  useEffect, useRef } from "react";
 
 const Searchbar = ({ query, setQuery }) => {
   const input_el = useRef(null);

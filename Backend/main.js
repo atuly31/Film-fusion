@@ -8,7 +8,7 @@ import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import dotenv from "dotenv";
 import pgSession from "connect-pg-simple";
-// import { verify } from "crypto";
+
 dotenv.config();
 const app = express();
 const PORT = 4000;

@@ -39,15 +39,15 @@
     37: 'Western',
   };
 
-  const MovieCarousel = () => {
+  const MovieCarousel = ({handleMovieID }) => {
     const [index, setIndex] = useState(0);
     const [movies, setMovies] = useState([]);
-
+    const API = process.env.REACT_APP_APIKEY
     useEffect(() => {
       const fetchMovies = async () => {
         try {
           const response = await axios.get(
-            'https://api.themoviedb.org/3/trending/movie/week?api_key=1d39a93a74608e12f6cce093386334bb'
+            `https://api.themoviedb.org/3/trending/movie/week?api_key=${API}`
           );
           console.log(response.data.results)
           setMovies(response.data.results); 
@@ -81,7 +81,7 @@
           <CardContent>
             <Typography variant="h3">{currentMovie.title}</Typography>
             <Typography variant="h5">Genres: {genres}</Typography>
-            <Typography variant="body1">{currentMovie.overview}</Typography>
+            {/* <Typography variant="body1">{currentMovie.overview}</Typography> */}
           </CardContent>
           <CardActions>
             <Button variant="contained" color="primary">
@@ -91,6 +91,7 @@
               variant="outlined"
               href={`https://www.themoviedb.org/movie/${currentMovie.id}`}
               target="_blank"
+              onClick={()=>handleMovieID (currentMovie.id)}
             >
               More Info
             </Button>
