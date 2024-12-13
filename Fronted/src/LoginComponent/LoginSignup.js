@@ -60,7 +60,7 @@ const LoginSignup = () => {
   const submitLoginForm = async(data) => {
     try{
       const payload = {...data, action: "login"};
-    const response = await axios.post('http://localhost:4000/loginSignup',payload, { withCredentials: true });
+    const response = await axios.post('https://fusionfilm-backend.onrender.com/loginSignup',payload, { withCredentials: true });
     const User_data = response.data
     console.log(User_data)
     localStorage.setItem("user", JSON.stringify({ ...User_data, password: "" }));
@@ -82,7 +82,7 @@ const LoginSignup = () => {
     try {
       const payload = { ...data, action: "register" };
       console.log(payload)
-      const response = await axios.post('http://localhost:4000/loginSignup', payload, { withCredentials: true });
+      const response = await axios.post('https://fusionfilm-backend.onrender.com/loginSignup', payload, { withCredentials: true });
       const User_data = response.data;
       console.log("before try catch")
       if (response.status === 201) {

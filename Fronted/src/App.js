@@ -64,7 +64,7 @@ export default function App() {
     try {
       const val = localStorage.getItem("user");
       const User_data = JSON.parse(val);
-      const response = await axios.post("http://localhost:4000", {
+      const response = await axios.post("https://fusionfilm-backend.onrender.com", {
         ...movie_list,
         currentUser: User_data.id,
       });
@@ -86,7 +86,7 @@ export default function App() {
   const deleteMovie = async (movieID) => {
     try {
       console.log(movieID);
-      const response = await axios.delete("http://localhost:4000", {
+      const response = await axios.delete("https://fusionfilm-backend.onrender.com", {
         data: { movieID },
       });
 
