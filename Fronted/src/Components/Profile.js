@@ -39,7 +39,7 @@ const ProfilePage = () => {
 
         console.log(User_data);
         const userLikedMovie = await axios.get(
-          "http://localhost:4000/dashboard",
+          "https://fusionfilm-backend.onrender.com/dashboard",
           {
             withCredentials: true,
             params: {

@@ -63,7 +63,7 @@ export default function App() {
   const sendData = async (movie_list) => {
     try {
       const val = localStorage.getItem("user");
-      const User_data = JSON.parse(val);
+      const User_data = JSON.parse(val); 
       const response = await axios.post("https://fusionfilm-backend.onrender.com", {
         ...movie_list,
         currentUser: User_data.id,

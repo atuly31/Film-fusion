@@ -23,6 +23,7 @@ app.use(
     credentials: true,
   })
 );
+app.options("*", cors());
 
 // Routes
 app.post("/loginSignup", async (req, res) => {
