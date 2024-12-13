@@ -8,13 +8,13 @@
 # testinggit
 /coverage
 /Backend/node_modules
+/Backend/.env
 # production
 /build
 
 # misc
 .DS_Store
 .env
-Backend/.env
 .env.local
 .env.development.local
 .env.test.local

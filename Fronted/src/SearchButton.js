@@ -2,16 +2,16 @@ import {  useEffect, useRef } from "react";
 
 const Searchbar = ({ query, setQuery }) => {
   const input_el = useRef(null);
-  // useEffect(() => {
-  //   {
-  //     function handleLeftClick(e) {
-  //       e.preventDefault();
-  //       setQuery("");
-  //     }
-  //     document.addEventListener("click", handleLeftClick);
-  //     return () => document.removeEventListener("click", handleLeftClick);
-  //   }
-  // },[query]);
+  useEffect(() => {
+    {
+      function handleLeftClick(e) {
+        e.preventDefault();
+        setQuery("");
+      }
+      document.addEventListener("click", handleLeftClick);
+      return () => document.removeEventListener("click", handleLeftClick);
+    }
+  },[query]);
 
   useEffect(function () {
     function callback(e) {

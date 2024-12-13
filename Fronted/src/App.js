@@ -3,7 +3,7 @@ import StarRating from "./Star";
 import { useMovies } from "./useMovies";
 import Searchbar from "./SearchButton";
 import Navbar from "./Components/NavigationBar";
-import WatchedMoiveList  from "./WatchedMoiveList";
+import WatchedMoiveList from "./WatchedMoiveList";
 import axios from "axios";
 import MovieCarousel from "./Components/HomePage";
 
@@ -13,7 +13,7 @@ const average = (arr) =>
 export default function App() {
   const [query, setQuery] = useState("");
   const [selectedID, SetselectedID] = useState("");
-  const [movie_ID,setmovieID] = useState("");
+  const [movie_ID, setmovieID] = useState("");
   const [movies, iserror, isLodaing,] = useMovies(query, Close_btn);
   const [watched, setWatched] = useState([]);
   const [Genre, setGenre] = useState("")
@@ -22,23 +22,22 @@ export default function App() {
     console.log(`selected ${genre}`);
     setGenre(genre);
   };
-  
-  
+
+
   const HandleSelectedID = (selectedID) => {
     SetselectedID(selectedID);
   };
- const handleMovieID = (id)=>{
-   setmovieID(id);
- }
- console.log("SetMovieID onclick", movie_ID)
-  
+  const handleMovieID = (id) => {
+    setmovieID(id);
+  }
+
   console.log(watched);
 
   function Close_btn() {
     SetselectedID("");
   }
+ console.log("button on click",movie_ID)
 
- 
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -48,7 +47,7 @@ export default function App() {
         const response = await axios.get("http://localhost:4000", {
           withCredentials: true,
           params: {
-             currentUser: User_data.id
+            currentUser: User_data.id
           }
         });
         console.log(response.data);
@@ -57,9 +56,9 @@ export default function App() {
         console.error("Failed to fetch user data:", error);
       }
     };
-    
+
     fetchUserData();
-  },[]);
+  }, []);
 
   const sendData = async (movie_list) => {
     try {
@@ -119,13 +118,13 @@ export default function App() {
         show_type: "movie",
       },
       headers: {
-        "x-rapidapi-key":`${process.env.REACT_APP_API}`,
+        "x-rapidapi-key": `${process.env.REACT_APP_API}`,
         "x-rapidapi-host": "streaming-availability.p.rapidapi.com",
       },
     };
-   
+
     async function fetchGenre() {
-      
+
       try {
         const response = await axios.request(options);
         console.log(response.data.shows);
@@ -135,31 +134,31 @@ export default function App() {
       }
     }
     fetchGenre();
-    
-  },[Genre]);
-   
+
+  }, [Genre]);
+
   const handle_delete = (movieID) => {
     console.log(movieID);
     deleteMovie(movieID);
   };
 
   return (
-    
+
     <>
-  
-      <Navbar handleGenre = {handleGenre}>
+
+      <Navbar handleGenre={handleGenre}>
         <Searchbar query={query} setQuery={setQuery} />
       </Navbar>
-      
+
       <Main>
         <ListBox>
-          
-          {query==="" && genre==="" && <MovieCarousel handleMovieID={handleMovieID}/>}
+
+          {query === "" && <MovieCarousel handleMovieID={handleMovieID} />}
           {/* {isLodaing && <Loader />} */}
-          {query!=="" && (
-            <MoivesList movies={movies} genremovies = {genremovies} HandleSelectedID={HandleSelectedID} Genre ={Genre}/>
+          {query !== "" && (
+            <MoivesList movies={movies} genremovies={genremovies} HandleSelectedID={HandleSelectedID} Genre={Genre} />
           )}
-          {Genre!=="" &&<MoivesList movies={movies} genremovies = {genremovies} Genre={Genre} HandleSelectedID={HandleSelectedID} />}
+          {Genre !== "" && <MoivesList movies={movies} genremovies={genremovies} Genre={Genre} HandleSelectedID={HandleSelectedID} />}
           {/* {iserror && <Error_message message={iserror} />} */}
         </ListBox>
 
@@ -283,11 +282,11 @@ const Moive_details = ({
       userRating,
       runtime: Number(runtime.split(" ").at(0)),
     };
-   
+
     sendData(watchedMovie);
-    
+
   };
- 
+
   useEffect(() => {
     async function getMoviesByID() {
       const response = await fetch(
@@ -300,32 +299,36 @@ const Moive_details = ({
     getMoviesByID();
   }, [selectedID]);
 
-  // useEffect(() => {
-    
-  //     const fetchMovieDetails = async () => {
-  //       try {
-  //         const response = await axios.get(`https://api.themoviedb.org/3/movie/${movie_ID}`, {
-  //           params: { language: 'en-US' },
-  //           headers: {
-  //             accept: 'application/json',
-  //             Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDM5YTkzYTc0NjA4ZTEyZjZjY2UwOTMzODYzMzRiYiIsIm5iZiI6MTcyNTAxNjM1MS41MTQsInN1YiI6IjY2ZDFhOTFmMDkwOTY5OTQ2MWI1ZjBmYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eGbu-E_6_xTsqX2onqZ_M5mfwJwYcqUuJXt_ewE5PEE'
-  //           }
-  //         });
-  //         const dataa = response.data
-  //         setMovie(dataa);
-  //         console.log(response.data); // Log the response data
-  //       } catch (error) {
-  //         console.error("Error fetching movie details:", error.response?.data || error.message);
-  //       }
-       
-  //     };
+  useEffect(() => {
+    if (!movie_ID) return;
 
-      
-      
-    
-  //   fetchMovieDetails()
-  // }, [movie_ID]);
+    const fetchMovieDetails = async () => {
+      // setLoading(true); // Start loading
+      try {
+        const response = await axios.get(`https://api.themoviedb.org/3/movie/${movie_ID}`, {
+          params: { language: "en-US" },
+          headers: {
+            accept: "application/json",
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIxZDM5YTkzYTc0NjA4ZTEyZjZjY2UwOTMzODYzMzRiYiIsIm5iZiI6MTcyNTAxNjM1MS41MTQsInN1YiI6IjY2ZDFhOTFmMDkwOTY5OTQ2MWI1ZjBmYSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.eGbu-E_6_xTsqX2onqZ_M5mfwJwYcqUuJXt_ewE5PEE`, // Use environment variable
+          },
+        });
+        console.log(response.data)
+        setMovie(response.data); // Update state with fetched data
+      } catch (error) {
+        console.error("Error fetching movie details:", error.response?.data || error.message);
+      } 
+      // finally {
+      //   setLoading(false); // End loading
+      // }
+    };
 
+    fetchMovieDetails();
+
+    // Optional cleanup
+    return () => {
+      setMovie(null); // Reset movie state if `movie_ID` changes
+    };
+  }, [movie_ID]);
 
   useEffect(
     function () {
@@ -391,64 +394,64 @@ const Moive_details = ({
   );
 };
 
-const MoivesList = ({ movies, HandleSelectedID ,genremovies,Genre}) => {
+const MoivesList = ({ movies, HandleSelectedID, genremovies, Genre }) => {
   console.log(movies);
   console.log(Genre);
   return (
     <ul className="list list-movies">
-      {Genre===""
+      {Genre === ""
         ? movies.map((movie) => (
-            <Movies
-              key={movie.imdbID} // Add a key for better list rendering
-              movie={movie}
-              HandleSelectedID={HandleSelectedID}
-              Genre={Genre}
-            />
-          ))
+          <Movies
+            key={movie.imdbID} // Add a key for better list rendering
+            movie={movie}
+            HandleSelectedID={HandleSelectedID}
+            Genre={Genre}
+          />
+        ))
         : genremovies.map((movie) => (
-            <Movies
-              key={movie.imdbID} // Ensure unique keys are added
-              movie={movie}
-              HandleSelectedID={HandleSelectedID}
-              Genre={Genre}
-            />
-          ))}
+          <Movies
+            key={movie.imdbID} // Ensure unique keys are added
+            movie={movie}
+            HandleSelectedID={HandleSelectedID}
+            Genre={Genre}
+          />
+        ))}
     </ul>
   );
 };
 
 const Movies = ({ movie, HandleSelectedID, Genre }) => {
-  
+
   return (
     <li onClick={() => HandleSelectedID(movie.imdbID)} key={movie.imdbID}>
-      {Genre==="" ? (
+      {Genre === "" ? (
         <>
-        <img src={movie.Poster} alt={`${movie.Title} poster`} />
+          <img src={movie.Poster} alt={`${movie.Title} poster`} />
           <h3>{movie.Title}</h3>
           <div>
             <p>
               <span>🗓</span>
               <span>{movie.Year}</span>
             </p>
-          
+
           </div>
-        
-        
+
+
         </>
       ) : (
         <>
-        <img
+          <img
             src={movie.imageSet.verticalPoster?.w720}
             alt={`${movie.title} poster`}
           />
-          <h3>{movie.title }</h3>
+          <h3>{movie.title}</h3>
           <div>
             <p>
               <span>🗓</span>
               <span>{movie.releaseYear}</span>
             </p>
           </div>
-         
+
         </>
       )}
     </li>
@@ -459,8 +462,8 @@ const Movies = ({ movie, HandleSelectedID, Genre }) => {
 const Moive_Summary = ({ watched }) => {
   const avgImdbRating = Math.round(average(
     watched.map((movie) => Number(movie.imdbrating))
-  ),2);
-  const avgUserRating = Math.round(average(watched.map((movie) => movie.userrating)),2);
+  ), 2);
+  const avgUserRating = Math.round(average(watched.map((movie) => movie.userrating)), 2);
   const avgRuntime = Math.round(
     average(watched.map((movie) => Number(movie.runtime))),
     1

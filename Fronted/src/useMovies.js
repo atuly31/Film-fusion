@@ -4,6 +4,7 @@ export const useMovies = (query,callback) => {
     const [movies, setMovies] = useState([]);
     const [isLodaing , setLoading] = useState(false);
     const  [iserror, seterror] = useState("")
+    
     const Key = process.env.REACT_APP_API_KEY
     useEffect(function () {
      
