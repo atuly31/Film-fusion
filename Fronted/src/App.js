@@ -45,7 +45,7 @@ export default function App() {
       const User_data = JSON.parse(val);
       try {
         const response = await axios.get("https://fusionfilm-backend.onrender.com", {
-          withCredentials: true,
+         
           params: {
             currentUser: User_data.id
           }
