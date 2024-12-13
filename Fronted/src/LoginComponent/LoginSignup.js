@@ -81,7 +81,6 @@ const LoginSignup = () => {
   const submitForm = async (data) => {
     try {
       const payload = { ...data, action: "register" };
-      console.log(payload)
       const response = await axios.post('https://fusionfilm-backend.onrender.com/loginSignup', payload, { withCredentials: true });
       const User_data = response.data;
       console.log("before try catch")
