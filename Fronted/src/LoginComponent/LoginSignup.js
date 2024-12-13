@@ -6,6 +6,7 @@ import Modal from "../Components/Modal";
 const LoginSignup = () => {
   const [isRightPanelActive, setRightPanelActive] = useState(false);
   const [isOpen, Setisopen] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const  Nav = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
@@ -44,10 +45,12 @@ const LoginSignup = () => {
         const User_data = JSON.parse(val)
         if (!User_data) {
           Setisopen(false);
+          setIsLoggedIn(false);
           return;
         }
         else{
-          Setisopen((pre)=>!pre);
+          setIsLoggedIn(true)
+          Setisopen(true);
           
       } } catch (error) {
         console.error("Failed to fetch user data:", error);

@@ -35,9 +35,9 @@ const ProfilePage = () => {
           return;
         }
 
-        setIsModalOpen((pre) => !pre);
+        // setIsModalOpen((pre) => !pre);
 
-        console.log(User_data);
+        console.log("User data from localStorage:", User_data);
         const userLikedMovie = await axios.get(
           "https://fusionfilm-backend.onrender.com/dashboard",
           {

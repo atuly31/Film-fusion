@@ -44,7 +44,7 @@ export default function App() {
       const val = localStorage.getItem("user");
       const User_data = JSON.parse(val);
       try {
-        const response = await axios.get("http://localhost:4000", {
+        const response = await axios.get("https://fusionfilm-backend.onrender.com", {
           withCredentials: true,
           params: {
             currentUser: User_data.id
